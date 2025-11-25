@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Welcome to Our Website</title>
     <link rel="stylesheet" href="style.css">
+    <!-- A-Frame for AR -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <!-- Three.js for 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <header>
@@ -16,6 +20,7 @@
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="feedback.html">Feedback</a></li>
                 <li><a href="services.html">Services</a></li>
+                <li><a href="ar-gallery.html">AR Gallery</a></li>
             </ul>
         </nav>
     </header>
@@ -23,13 +28,53 @@
     <div class="container">
         <section class="hero">
             <h1>Welcome to Our Website</h1>
-            <p>Discover amazing content and connect with us</p>
+            <p>Experience the future with AR and 3D technology</p>
         </section>
+
+        <!-- Hero Image -->
+        <img src="https://images.pexels.com/photos/1486974/pexels-photo-1486974.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Beautiful clouds covered blue sky" class="hero-image">
 
         <main>
             <h2>Home</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum delectus voluptas dolor nisi, perferendis minima, reprehenderit consequuntur dicta sit nemo sed totam placeat expedita numquam?</p>
+            <p>Welcome to our innovative website that combines beautiful visuals with cutting-edge AR and 3D technology. Discover amazing content and connect with us in new and immersive ways.</p>
             
+            <!-- AR Demo Section -->
+            <h3>Interactive AR Experience</h3>
+            <div class="ar-info">
+                <h4>🎯 Augmented Reality Features</h4>
+                <p>Click on any item below to explore interactive 3D objects and augmented reality demonstrations. Your browser will display immersive 3D visualizations that respond to your interactions!</p>
+            </div>
+
+            <div class="ar-demo">
+                <div class="ar-item" onclick="toggleARViewer('cube')">
+                    <div class="ar-item-icon">🎲</div>
+                    <h4>3D Cube</h4>
+                    <p>Interactive rotating cube</p>
+                </div>
+                <div class="ar-item" onclick="toggleARViewer('sphere')">
+                    <div class="ar-item-icon">🌍</div>
+                    <h4>3D Sphere</h4>
+                    <p>Spinning globe</p>
+                </div>
+                <div class="ar-item" onclick="toggleARViewer('pyramid')">
+                    <div class="ar-item-icon">📐</div>
+                    <h4>3D Pyramid</h4>
+                    <p>Rotating pyramid</p>
+                </div>
+                <div class="ar-item" onclick="toggleARViewer('torus')">
+                    <div class="ar-item-icon">💫</div>
+                    <h4>3D Torus</h4>
+                    <p>Floating torus ring</p>
+                </div>
+            </div>
+
+            <!-- 3D Canvas -->
+            <div id="arContainer" class="ar-container" style="display: none;">
+                <canvas id="canvas3d" class="ar-canvas"></canvas>
+            </div>
+
+            <button onclick="closeARViewer()" id="closeBtn" style="display: none; margin-top: 1rem; width: 100%; padding: 0.75rem;">Close AR Viewer</button>
+
             <h3>Featured Content</h3>
             <div class="cards-container">
                 <div class="card">
@@ -37,16 +82,16 @@
                     <p>We provide top-notch services tailored to your needs with expertise and dedication.</p>
                 </div>
                 <div class="card">
-                    <h3>Customer Support</h3>
-                    <p>Our team is available 24/7 to assist you with any questions or concerns.</p>
+                    <h3>AR Integration</h3>
+                    <p>Experience immersive augmented reality features designed for the modern web.</p>
                 </div>
                 <div class="card">
                     <h3>Innovation</h3>
-                    <p>We constantly innovate to bring you the latest and greatest solutions.</p>
+                    <p>We constantly innovate to bring you the latest and greatest 3D and AR solutions.</p>
                 </div>
             </div>
 
-            <p>Explore our website to learn more about what we offer and how we can help you achieve your goals.</p>
+            <p>Explore our website to learn more about what we offer and how we can help you achieve your goals. Try our interactive AR features to see the future of web technology!</p>
         </main>
     </div>
 
@@ -54,5 +99,160 @@
         <p>&copy; 2025 MyWebsite. All rights reserved.</p>
         <p><a href="contact.html">Contact Us</a> | <a href="feedback.html">Send Feedback</a> | <a href="about.html">About Us</a></p>
     </footer>
+
+    <script>
+        // Three.js Scene Setup
+        let scene, camera, renderer, cube, sphere, pyramid, torus;
+        let currentObject = null;
+        let animationId = null;
+
+        function initThreeJS() {
+            const container = document.getElementById('arContainer');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 3;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.getElementById('canvas3d') });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Lighting
+            const light1 = new THREE.PointLight(0xffffff, 1);
+            light1.position.set(10, 10, 10);
+            scene.add(light1);
+
+            const light2 = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(light2);
+
+            // Create objects
+            createCube();
+            createSphere();
+            createPyramid();
+            createTorus();
+
+            // Animation loop
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                if (currentObject) {
+                    currentObject.rotation.x += 0.01;
+                    currentObject.rotation.y += 0.015;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const newWidth = container.clientWidth;
+                const newHeight = container.clientHeight;
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, newHeight);
+            });
+        }
+
+        function createCube() {
+            const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x667eea,
+                wireframe: false,
+                shininess: 100
+            });
+            cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+            cube.visible = false;
+        }
+
+        function createSphere() {
+            const geometry = new THREE.SphereGeometry(1, 32, 32);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x764ba2,
+                wireframe: false,
+                shininess: 100
+            });
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            sphere.visible = false;
+        }
+
+        function createPyramid() {
+            const geometry = new THREE.ConeGeometry(1.2, 2, 4);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0xff6b6b,
+                wireframe: false,
+                shininess: 100
+            });
+            pyramid = new THREE.Mesh(geometry, material);
+            scene.add(pyramid);
+            pyramid.visible = false;
+        }
+
+        function createTorus() {
+            const geometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x4ecdc4,
+                wireframe: false,
+                shininess: 100
+            });
+            torus = new THREE.Mesh(geometry, material);
+            scene.add(torus);
+            torus.visible = false;
+        }
+
+        function toggleARViewer(objectType) {
+            const container = document.getElementById('arContainer');
+            const closeBtn = document.getElementById('closeBtn');
+
+            if (renderer === undefined) {
+                initThreeJS();
+            }
+
+            // Hide all objects
+            if (cube) cube.visible = false;
+            if (sphere) sphere.visible = false;
+            if (pyramid) pyramid.visible = false;
+            if (torus) torus.visible = false;
+
+            // Show selected object
+            switch(objectType) {
+                case 'cube':
+                    cube.visible = true;
+                    currentObject = cube;
+                    break;
+                case 'sphere':
+                    sphere.visible = true;
+                    currentObject = sphere;
+                    break;
+                case 'pyramid':
+                    pyramid.visible = true;
+                    currentObject = pyramid;
+                    break;
+                case 'torus':
+                    torus.visible = true;
+                    currentObject = torus;
+                    break;
+            }
+
+            container.style.display = 'flex';
+            closeBtn.style.display = 'block';
+        }
+
+        function closeARViewer() {
+            document.getElementById('arContainer').style.display = 'none';
+            document.getElementById('closeBtn').style.display = 'none';
+            currentObject = null;
+        }
+    </script>
 </body>
 </html>

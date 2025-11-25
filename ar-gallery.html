@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Gallery - Interactive 3D Experience</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">MyWebsite</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+                <li><a href="services.html">Services</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>AR Gallery</h1>
+            <p>Explore immersive 3D augmented reality experiences</p>
+        </section>
+
+        <!-- Hero Background Image -->
+        <img src="https://images.pexels.com/photos/1486974/pexels-photo-1486974.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Beautiful clouds covered blue sky" class="hero-image">
+
+        <main>
+            <h2>Welcome to AR Gallery</h2>
+            <p>Experience cutting-edge augmented reality with interactive 3D objects. Click on any gallery item below to launch the AR viewer and interact with realistic 3D models.</p>
+
+            <h3>AR Collection</h3>
+            <div class="cards-container">
+                <div class="card" onclick="launchARMode('cube')">
+                    <h3>💎 Crystal Cube</h3>
+                    <p>An elegant rotating cube with reflective surfaces. Watch how light interacts with the geometry.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+                <div class="card" onclick="launchARMode('sphere')">
+                    <h3>🌐 Digital Sphere</h3>
+                    <p>A perfectly rendered sphere with smooth shading. Represents connectivity and completeness.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+                <div class="card" onclick="launchARMode('pyramid')">
+                    <h3>🔺 Geometric Pyramid</h3>
+                    <p>A striking pyramid shape with dynamic rotation. Symbolizes growth and achievement.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+                <div class="card" onclick="launchARMode('torus')">
+                    <h3>💫 Infinity Torus</h3>
+                    <p>A mesmerizing torus ring that represents continuity. Beautiful from every angle.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+                <div class="card" onclick="launchARMode('octahedron')">
+                    <h3>⬠ Octahedron</h3>
+                    <p>A symmetrical 8-faced polyhedron with intricate geometry and smooth rotations.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+                <div class="card" onclick="launchARMode('icosahedron')">
+                    <h3>🔮 Icosahedron</h3>
+                    <p>A complex 20-faced polyhedron representing mathematical beauty and perfection.</p>
+                    <p style="color: #667eea; font-weight: 600; cursor: pointer;">Click to View →</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 3rem;">How to Use AR Gallery</h3>
+            <div style="background: #f0f4ff; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                <ol style="margin-left: 2rem;">
+                    <li>Click on any gallery item card to launch the 3D AR viewer</li>
+                    <li>Watch the 3D object rotate and interact with dynamic lighting</li>
+                    <li>The object will automatically animate with smooth rotation</li>
+                    <li>Click the close button to return to the gallery</li>
+                </ol>
+            </div>
+
+            <h3>AR Technology Features</h3>
+            <div class="cards-container">
+                <div class="card">
+                    <h3>Real-time Rendering</h3>
+                    <p>Powered by Three.js for smooth, high-performance 3D graphics rendering in your browser.</p>
+                </div>
+                <div class="card">
+                    <h3>Advanced Lighting</h3>
+                    <p>Multiple light sources create realistic shadows and highlights on 3D objects.</p>
+                </div>
+                <div class="card">
+                    <h3>Interactive Display</h3>
+                    <p>Responsive viewport that adapts to different screen sizes and devices.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- AR Viewer Modal -->
+        <div id="arModalContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; padding: 2rem;">
+            <div style="width: 100%; max-width: 900px; margin: 2rem auto; background: white; border-radius: 10px; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 id="arTitle">3D Object</h2>
+                    <button onclick="closeARMode()" style="font-size: 1.5rem; border: none; background: none; cursor: pointer; color: #667eea;">✕</button>
+                </div>
+                <div id="arViewerContainer" class="ar-container" style="display: flex; margin-bottom: 1rem;">
+                    <canvas id="arCanvas" class="ar-canvas"></canvas>
+                </div>
+                <p id="arDescription" style="text-align: center; color: #666;"></p>
+                <button onclick="closeARMode()" style="width: 100%; padding: 0.75rem; margin-top: 1rem;">Close AR Viewer</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 MyWebsite. All rights reserved.</p>
+        <p><a href="contact.html">Contact Us</a> | <a href="feedback.html">Send Feedback</a> | <a href="about.html">About Us</a></p>
+    </footer>
+
+    <script>
+        let arScene, arCamera, arRenderer;
+        let arCurrentObject = null;
+        let arAnimationId = null;
+
+        function initARScene() {
+            const container = document.getElementById('arViewerContainer');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            arScene = new THREE.Scene();
+            arScene.background = new THREE.Color(0x1a1a2e);
+
+            arCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            arCamera.position.z = 3;
+
+            arRenderer = new THREE.WebGLRenderer({ 
+                antialias: true, 
+                canvas: document.getElementById('arCanvas'),
+                alpha: true 
+            });
+            arRenderer.setSize(width, height);
+            arRenderer.setPixelRatio(window.devicePixelRatio);
+
+            // Lighting
+            const light1 = new THREE.PointLight(0xffffff, 1);
+            light1.position.set(10, 10, 10);
+            arScene.add(light1);
+
+            const light2 = new THREE.PointLight(0x667eea, 0.8);
+            light2.position.set(-10, -10, 10);
+            arScene.add(light2);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            arScene.add(ambientLight);
+
+            createARObjects();
+            animateAR();
+        }
+
+        function createARObjects() {
+            // Cube
+            const cubeGeom = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+            const cubeMat = new THREE.MeshPhongMaterial({ color: 0x667eea, shininess: 100 });
+            const cubeObj = new THREE.Mesh(cubeGeom, cubeMat);
+            cubeObj.visible = false;
+            arScene.add(cubeObj);
+
+            // Sphere
+            const sphereGeom = new THREE.SphereGeometry(1, 32, 32);
+            const sphereMat = new THREE.MeshPhongMaterial({ color: 0x764ba2, shininess: 100 });
+            const sphereObj = new THREE.Mesh(sphereGeom, sphereMat);
+            sphereObj.visible = false;
+            arScene.add(sphereObj);
+
+            // Pyramid
+            const pyramidGeom = new THREE.ConeGeometry(1.2, 2, 4);
+            const pyramidMat = new THREE.MeshPhongMaterial({ color: 0xff6b6b, shininess: 100 });
+            const pyramidObj = new THREE.Mesh(pyramidGeom, pyramidMat);
+            pyramidObj.visible = false;
+            arScene.add(pyramidObj);
+
+            // Torus
+            const torusGeom = new THREE.TorusGeometry(1, 0.4, 16, 100);
+            const torusMat = new THREE.MeshPhongMaterial({ color: 0x4ecdc4, shininess: 100 });
+            const torusObj = new THREE.Mesh(torusGeom, torusMat);
+            torusObj.visible = false;
+            arScene.add(torusObj);
+
+            // Octahedron
+            const octaGeom = new THREE.OctahedronGeometry(1);
+            const octaMat = new THREE.MeshPhongMaterial({ color: 0xf39c12, shininess: 100 });
+            const octaObj = new THREE.Mesh(octaGeom, octaMat);
+            octaObj.visible = false;
+            arScene.add(octaObj);
+
+            // Icosahedron
+            const icosaGeom = new THREE.IcosahedronGeometry(1);
+            const icosaMat = new THREE.MeshPhongMaterial({ color: 0xe74c3c, shininess: 100 });
+            const icosaObj = new THREE.Mesh(icosaGeom, icosaMat);
+            icosaObj.visible = false;
+            arScene.add(icosaObj);
+
+            window.arObjects = {
+                cube: cubeObj,
+                sphere: sphereObj,
+                pyramid: pyramidObj,
+                torus: torusObj,
+                octahedron: octaObj,
+                icosahedron: icosaObj
+            };
+        }
+
+        function animateAR() {
+            arAnimationId = requestAnimationFrame(animateAR);
+            
+            if (arCurrentObject) {
+                arCurrentObject.rotation.x += 0.01;
+                arCurrentObject.rotation.y += 0.015;
+                arCurrentObject.rotation.z += 0.005;
+            }
+
+            arRenderer.render(arScene, arCamera);
+        }
+
+        function launchARMode(objectType) {
+            const modal = document.getElementById('arModalContainer');
+            const title = document.getElementById('arTitle');
+            const desc = document.getElementById('arDescription');
+
+            const descriptions = {
+                cube: 'Crystal Cube - A geometric representation of structure and stability',
+                sphere: 'Digital Sphere - Perfect symmetry and infinite possibilities',
+                pyramid: 'Geometric Pyramid - Rising towards excellence',
+                torus: 'Infinity Torus - Continuous and eternal',
+                octahedron: 'Octahedron - Mathematical beauty with 8 faces',
+                icosahedron: 'Icosahedron - Complex geometry with 20 faces'
+            };
+
+            if (!arRenderer) {
+                modal.style.display = 'block';
+                initARScene();
+            }
+
+            // Hide all objects
+            Object.values(window.arObjects).forEach(obj => obj.visible = false);
+
+            // Show selected object
+            window.arObjects[objectType].visible = true;
+            arCurrentObject = window.arObjects[objectType];
+
+            title.textContent = objectType.charAt(0).toUpperCase() + objectType.slice(1);
+            desc.textContent = descriptions[objectType];
+
+            modal.style.display = 'block';
+        }
+
+        function closeARMode() {
+            document.getElementById('arModalContainer').style.display = 'none';
+            arCurrentObject = null;
+        }
+
+        // Close modal on background click
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('arModalContainer');
+            if (event.target === modal) {
+                closeARMode();
+            }
+        });
+    </script>
+</body>
+</html>
