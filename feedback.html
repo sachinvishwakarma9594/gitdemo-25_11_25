@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Share Your Thoughts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">MyWebsite</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+                <li><a href="services.html">Services</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Send Us Your Feedback</h1>
+            <p>Help us improve by sharing your valuable feedback</p>
+        </section>
+
+        <main>
+            <h2>Your Feedback Matters</h2>
+            <p>We truly value your opinions and suggestions. Your feedback helps us improve our services and better meet your needs. Please take a moment to share your thoughts with us.</p>
+
+            <div style="max-width: 700px; margin: 2rem auto;">
+                <form>
+                    <div class="form-group">
+                        <label for="feedback-name">Your Name</label>
+                        <input type="text" id="feedback-name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedback-email">Email Address</label>
+                        <input type="email" id="feedback-email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Feedback Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">-- Select a Category --</option>
+                            <option value="product">Product/Service Quality</option>
+                            <option value="customer-service">Customer Service</option>
+                            <option value="website">Website Experience</option>
+                            <option value="pricing">Pricing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">How would you rate your experience?</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">-- Select a Rating --</option>
+                            <option value="5">Excellent (5/5)</option>
+                            <option value="4">Very Good (4/5)</option>
+                            <option value="3">Good (3/5)</option>
+                            <option value="2">Fair (2/5)</option>
+                            <option value="1">Poor (1/5)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedback-message">Your Feedback</label>
+                        <textarea id="feedback-message" name="message" placeholder="Please share your feedback in detail..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allow-contact">
+                            <input type="checkbox" id="allow-contact" name="allow_contact"> 
+                            It's okay to contact me about my feedback
+                        </label>
+                    </div>
+
+                    <button type="submit">Submit Feedback</button>
+                </form>
+            </div>
+
+            <h3 style="text-align: center; margin-top: 3rem;">Why Your Feedback Matters</h3>
+            <div class="cards-container">
+                <div class="card">
+                    <h3>Improvement</h3>
+                    <p>Your insights help us identify areas for improvement and enhance our offerings.</p>
+                </div>
+                <div class="card">
+                    <h3>Innovation</h3>
+                    <p>Your suggestions inspire us to innovate and develop new features you'll love.</p>
+                </div>
+                <div class="card">
+                    <h3>Quality</h3>
+                    <p>Feedback drives us to maintain high standards and deliver exceptional quality.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 MyWebsite. All rights reserved.</p>
+        <p><a href="contact.html">Contact Us</a> | <a href="feedback.html">Send Feedback</a> | <a href="about.html">About Us</a></p>
+    </footer>
+</body>
+</html>
